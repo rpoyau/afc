@@ -1,0 +1,105 @@
+\section{Example: Galactic Rotation Test}\label{sec:galactic-rotation}
+
+\begin{definition}[Disk plan for a galaxy]\label{def:disk-plan}
+A galactic disk plan is a finite plan $(V,E)$ together with:
+\begin{itemize}
+    \item a finite set of radii $R := \{1,2,\dots,R_{\max}\}$;
+    \item for each $r \in R$, a ring of nodes
+    \[
+        L_r = \{(r,\theta_j) : j = 0,\dots,N_r-1\};
+    \]
+    \item a node set
+    \[
+        V = \{\sigma\} \cup \bigcup_{r \in R} L_r,
+    \]
+    where $\sigma$ is a distinguished central node;
+    \item a seat set $E$ containing:
+    \begin{itemize}
+        \item tangential seats $(r,\theta_j) \to (r,\theta_{j+1 \bmod N_r})$ within each $L_r$;
+        \item radial seats between neighbouring rings $L_r$ and $L_{r\pm 1}$, and seats connecting $\sigma$ to nodes of $L_1$.
+    \end{itemize}
+\end{itemize}
+The full $n$-body state $(V,E,B,n_t,s_t)$ evolves per bip by Consequence~\ref{cons:nbody-step}.
+\end{definition}
+
+\begin{definition}[Test star state]\label{def:test-star}
+On a disk plan as in Definition~\ref{def:disk-plan}, a distinguished test star is represented by a body $b_\star \in B$ with internal state
+\[
+    s_t(b_\star) = (r_{\star,t},\theta_{\star,t},u_{\star,t}),
+\]
+where $r_{\star,t} \in R$ is a radial index, $\theta_{\star,t}$ is an angular index, and $u_{\star,t}$ denotes any additional internal data (for example, a record of Memorum relevant to the orbit). The position of the test star at bip $t$ is the node $x_{\star,t} \in L_{r_{\star,t}}$ corresponding to $(r_{\star,t},\theta_{\star,t})$.
+\end{definition}
+
+\begin{definition}[Target rotation profile and calibration]\label{def:target-rotation}
+Let $v_{\mathrm{target}}(r)$ be a tangential speed profile as a function of physical radius, obtained from external rotation-curve data for a chosen galaxy. Using the calibration in Section~\ref{sec:units}, this profile is mapped to a substrate angular frequency profile
+\[
+    \nu_{\mathrm{sub}}(r) \quad [\mathrm{bip}^{-1}],
+\]
+and, for a ring with $N_r$ nodes, to a target mean phase advance per bip
+\[
+    \mu_{\mathrm{orb}}(r) := N_r\,\nu_{\mathrm{sub}}(r).
+\]
+These values determine the expectations of the local ternary kernels governing tangential motion of the test star at each radius.
+\end{definition}
+
+\begin{consequence}[Specialisation of the $n$-body update]\label{cons:galactic-step}
+On the disk plan of Definition~\ref{def:disk-plan}, the $n$-body update (Consequence~\ref{cons:nbody-step}) is specialised for the test star $b_\star$ as follows:
+\begin{enumerate}
+    \item Outcomes $\tau_t(e)$ are sampled on all seats $e \in E$ using declared kernels. Tangential outcomes on seats incident to $x_{\star,t}$ determine a proposed angular increment $\Delta \theta_{\star,t}$ via a local map whose expectation matches $\mu_{\mathrm{orb}}(r_{\star,t})$ at the current radius.
+    \item Radial outcomes on seats connecting $L_{r_{\star,t}}$ to neighbouring rings determine a proposed radial increment $\Delta r_{\star,t} \in \{-1,0,+1\}$, subject to declared stability constraints that keep $r_{\star,t}$ within a chosen radial band.
+    \item The ledger $n_t$ is updated to $n_{t+1}$ at all nodes by the TXOR rule.
+    \item The internal state of $b_\star$ is updated by a local map
+    \[
+        s_{t+1}(b_\star)
+        =
+        F_\star\bigl(
+            b_\star,\,
+            s_t(b_\star),\,
+            n_t(b_\star),\,
+            \Delta n_t(b_\star),\,
+            \{\tau_t(e): e \text{ incident to } b_\star\}
+        \bigr),
+    \]
+    where $F_\star$ acts on the components by
+    \begin{align*}
+        r_{\star,t+1} &:= r_{\star,t} + \Delta r_{\star,t}, \\
+        \theta_{\star,t+1} &:= \theta_{\star,t} + \Delta \theta_{\star,t} \pmod{2\pi},
+    \end{align*}
+    with any additional fields in $u_{\star,t}$ updated by declared local rules.
+\end{enumerate}
+\end{consequence}
+
+\begin{definition}[Measured rotation curve]\label{def:measured-rotation}
+For a time window of $T$ bips, the measured substrate angular frequency of the test star at radius index $r$ is
+\[
+    \nu_{\mathrm{meas}}(r;T)
+    :=
+    \frac{1}{2\pi T}
+    \sum_{\substack{t=0 \\ r_{\star,t}=r}}^{T-1}
+        \bigl(\theta_{\star,t+1} - \theta_{\star,t}\bigr) \bmod 2\pi.
+\]
+Using the calibration in Section~\ref{sec:units}, this defines a physical tangential speed profile $v_{\mathrm{meas}}(r;T)$ for comparison with $v_{\mathrm{target}}(r)$.
+\end{definition}
+
+\begin{theorem}[Flat rotation test on the disk plan]\label{thm:flat-rotation}
+Let a disk plan, target profile $v_{\mathrm{target}}(r)$, and calibrated kernel expectations $\mu_{\mathrm{orb}}(r)$ be given as in Definitions~\ref{def:disk-plan}–\ref{def:target-rotation}. Assume:
+\begin{itemize}
+    \item the global $n$-body update satisfies Consequences~\ref{cons:nbody-step} and~\ref{cons:nbody-local};
+    \item the tangential kernels for the test star are chosen so that their expectations match $\mu_{\mathrm{orb}}(r)$ in a radial band $r \in [r_{\min},r_{\max}]$.
+\end{itemize}
+Then, for sufficiently large $T$, the measured rotation curve $v_{\mathrm{meas}}(r;T)$ on that band approximates the target profile $v_{\mathrm{target}}(r)$ in the sense that
+\[
+    v_{\mathrm{meas}}(r;T) \approx v_{\mathrm{target}}(r)
+\]
+for all $r$ in the band, up to statistical fluctuations from the stochastic driver. In particular, if $v_{\mathrm{target}}(r)$ is approximately constant on $[r_{\min},r_{\max}]$, the same flatness is reflected in $v_{\mathrm{meas}}(r;T)$.
+\end{theorem}
+
+\begin{remark}[Scaling and reuse]\label{rem:galactic-scaling}
+For a disk plan with $N_{\mathrm{fl}} := |\bigcup_{r \in R} L_r|$ fluid nodes and sparse connectivity, a direct implementation of the $n$-body update, including the evolution of a test star, has cost $O(N_{\mathrm{fl}})$ per bip, as in Remark~\ref{rem:nbody-scaling}. With hierarchical data structures, the cost is essentially $O(N_{\mathrm{fl}}\log N_{\mathrm{fl}})$. The same implementation can be reused, with different plans and calibrations, to realise:
+\begin{enumerate}
+    \item a two-body ring test (Sun--Mercury) on a cycle plan;
+    \item a radial shell test (hydrogen-like shells) on a radial plan;
+    \item a galactic rotation test on a disk plan.
+\end{enumerate}
+In each case, the underlying AFC update and complexity bounds are the same; only the plan, internal state maps, and external comparison data differ.
+\end{remark}

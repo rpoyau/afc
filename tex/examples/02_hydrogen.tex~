@@ -1,0 +1,80 @@
+\section{Example: Hydrogen-Like Radial Shells}\label{sec:hydrogen-example}
+
+\begin{definition}[Radial shell plan]\label{def:radial-plan}
+A radial shell plan consists of:
+\begin{itemize}
+    \item a finite set of radii $R := \{1,2,\dots,R_{\max}\}$;
+    \item a node set $V$ partitioned as $V = \bigsqcup_{r \in R} L_r$, where $L_r$ is the set of nodes at radius index $r$;
+    \item a set of seats $E$ that connect nodes within each shell $L_r$ and between neighboring shells $L_r$ and $L_{r\pm 1}$.
+\end{itemize}
+The central source is represented by a distinguished region associated with $r=0$ (not included in $R$). Angular structure inside each $L_r$ is encoded by the intra-shell seats and is not used explicitly in this example.
+\end{definition}
+
+\begin{definition}[Radial index and phase register]\label{def:radial-phase}
+On a radial shell plan as in Definition~\ref{def:radial-plan}, a walker at bip $t$ is specified by:
+\begin{itemize}
+    \item a radial index $r_t \in R$;
+    \item a phase register $\phi_t \in \mathbb{R} / (2\pi\mathbb{Z})$.
+\end{itemize}
+The phase register records an accumulated phase associated with the path taken by the walker up to bip $t$.
+\end{definition}
+
+\begin{definition}[Radial phase cost]\label{def:phase-cost}
+A radial phase cost is a declared function
+\[
+    c : R \to \mathbb{R}_{>0}, \qquad r \mapsto c(r),
+\]
+interpreted as the phase increment per bip for remaining at radius $r$. For a proposed move to radius $r'$, the phase register is updated by
+\[
+    \phi_{t+1} := \phi_t + c(r') \pmod{2\pi}.
+\]
+A choice such as $c(r) \propto 1/r$ represents a monotone decrease of phase cost with radius and serves as a discrete analogue of a Coulomb-like potential profile.
+\end{definition}
+
+\begin{definition}[Resonance score]\label{def:resonance-score}
+Given a phase register $\phi \in \mathbb{R}/(2\pi\mathbb{Z})$, the resonance score is defined by
+\[
+    S(\phi) := 1 - \frac{2}{\pi}\,\min\{\phi,\,2\pi - \phi\},
+\]
+so that $S(\phi) = 1$ at $\phi \equiv 0 \pmod{2\pi}$ (exact loop closure) and $S(\phi) = 0$ at $\phi \equiv \pi \pmod{2\pi}$ (maximal mismatch). Intermediate values interpolate linearly.
+\end{definition}
+
+\begin{consequence}[Radial update with phase selection]\label{cons:radial-update}
+On a radial shell plan with fields $(r_t,\phi_t)$ as in Definitions~\ref{def:radial-phase}–\ref{def:resonance-score}, a single bip update of the walker is specified by:
+\begin{enumerate}
+    \item \textbf{Proposal.} Draw a proposed radial move $\delta r_t \in \{-1,0,+1\}$ from a symmetric ternary kernel and set
+    \[
+        r'_t := \min\{\max\{r_t + \delta r_t, 1\}, R_{\max}\}.
+    \]
+    \item \textbf{Phase update.} Compute
+    \[
+        \phi'_{t} := \phi_t + c(r'_t) \pmod{2\pi},
+    \]
+    where $c(\cdot)$ is the phase cost from Definition~\ref{def:phase-cost}.
+    \item \textbf{Acceptance.} Let $S(\phi'_t)$ be the resonance score from Definition~\ref{def:resonance-score}. Draw $u_t$ uniformly from $[0,1]$.
+    \begin{itemize}
+        \item If $u_t \le S(\phi'_t)$, accept the move: set $(r_{t+1},\phi_{t+1}) = (r'_t,\phi'_t)$.
+        \item Otherwise, reject or re-route the move: for example, set $(r_{t+1},\phi_{t+1}) = (r_t,\phi_t)$ or draw a new radius from a declared fallback rule.
+    \end{itemize}
+\end{enumerate}
+Repeated application of this update produces a path $(r_t,\phi_t)_{t\ge 0}$ whose radial visits are biased toward radii where the accumulated phase is close to integer multiples of $2\pi$.
+\end{consequence}
+
+\begin{remark}[Emergent shell occupancy]\label{rem:shell-occupancy}
+For a fixed phase cost profile $c(r)$ and update rule as in Consequence~\ref{cons:radial-update}, the empirical radial occupation counts
+\[
+    N_r(T) := \bigl|\{\,t \in \{0,\dots,T-1\} : r_t = r\,\}\bigr|
+\]
+define a histogram over $R$ after $T$ bips. For profiles $c(r)$ with simple monotone structure (for example, $c(r) \propto 1/r$), numerical experiments show that the histogram exhibits pronounced peaks at specific radii and low occupancy between these radii. These peaks correspond to radii where the cumulative phase admits near-integer loop closure, producing stable radial shells in the sense of repeated constructive interference.
+\end{remark}
+
+\begin{remark}[Reference implementation]\label{rem:hydrogen-implementation}
+A reference implementation may realise the update in Consequence~\ref{cons:radial-update} by:
+\begin{itemize}
+    \item initialising a starting radius $r_0$ and phase $\phi_0$;
+    \item iterating the proposal, phase update, and acceptance steps for a declared number of bips;
+    \item recording $(r_t)$ to form the radial histogram $N_r(T)$;
+    \item optionally, assigning random angular coordinates at each bip to present the visited radii as a three-dimensional point cloud.
+\end{itemize}
+The choice of phase cost profile $c(r)$ and the mapping from substrate radii to physical lengths are supplied by the calibration and motif layers and do not modify the AFC update rule.
+\end{remark}

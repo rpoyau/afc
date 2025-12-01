@@ -1,0 +1,104 @@
+\section{Units and Calibration}\label{sec:units}
+
+\begin{definition}[Fixed natural-unit convention]\label{def:natural-fixed}
+In the translation layer that relates AFC counts to external unit systems, a fixed natural-unit convention is adopted,
+\[
+    c = 1, \qquad \hbar = 1, \qquad G = 1.
+\]
+In this convention, mass, energy, and frequency are identified up to fixed numerical factors. All external quantities can be expressed in terms of a single base dimension, taken here to be time (or its inverse, frequency).
+\end{definition}
+
+\begin{definition}[Bip index]\label{def:bip-index}
+The internal time parameter in AFC is an integer tally $t \in \mathbb{Z}$ called the bip index. A bip is the elementary tick of the substrate clock. Recurrences and durations in AFC are expressed as integer counts of bips. Continuous time variables, when used, arise through the translation layer from declared bip durations.
+\end{definition}
+
+\begin{definition}[Substrate period and frequency]\label{def:afc-period-frequency}
+Let $\tau \in \mathbb{N}$ be a recurrence period in bips for a declared motif or process on the substrate. The associated substrate period and substrate frequency are
+\[
+    T_{\mathrm{sub}} := \tau \quad [\text{bip}],
+    \qquad
+    \nu_{\mathrm{sub}} := \frac{1}{\tau} \quad [\text{bip}^{-1}].
+\]
+These quantities are integer counts and their reciprocals with respect to the bip index.
+\end{definition}
+
+\begin{consequence}[Mass as frequency in the fixed convention]\label{cons:mass-freq-fixed}
+In the natural-unit convention of Definition~\ref{def:natural-fixed}, a mass $M$ can be represented by an angular frequency $\omega_M$ and a (linear) frequency $\nu_M$,
+\[
+    M \sim \omega_M \sim 2\pi \nu_M.
+\]
+A substrate frequency $\nu_{\mathrm{sub}}$ obtained from a recurrence period $\tau$ determines such a scale via
+\[
+    M \sim \omega_M \sim 2\pi \nu_{\mathrm{sub}},
+\]
+up to fixed numerical factors. A declared recurrence on the substrate can therefore be treated as a mass or energy scale within this convention.
+\end{consequence}
+
+\begin{remark}[Geometric information]\label{rem:geometry}
+Geometric information in AFC is encoded by the combinatorial structure of the plan: the node set $V$, the seats $E$ between nodes, and the topology of motifs. When a metric description is required (for example, distances in metres or positions in a chosen frame), it is supplied externally and applied as an interpretation of the plan; it is not part of the AFC axioms.
+\end{remark}
+
+\begin{definition}[Physical time scale]\label{def:phys-time}
+When a physical time scale is required, a constant $\Delta t_{\ast} > 0$ with units of time is declared. The physical time associated with bip index $t \in \mathbb{Z}$ is
+\[
+    t_{\mathrm{phys}} := t \,\Delta t_{\ast}.
+\]
+A substrate frequency $\nu_{\mathrm{sub}}$ then corresponds to a physical frequency
+\[
+    \nu_{\mathrm{phys}} := \frac{\nu_{\mathrm{sub}}}{\Delta t_{\ast}},
+\]
+and a physical angular frequency $\omega_{\mathrm{phys}} = 2\pi \nu_{\mathrm{phys}}$. This identification is a calibration step applied when mapping substrate quantities to an external time unit.
+\end{definition}
+
+\begin{definition}[SI bridge]\label{def:si-bridge}
+If data are supplied in the 2018 SI system, with base units for time (second), length (metre), and mass (kilogram), a bridge to AFC is defined by:
+\begin{enumerate}
+    \item converting SI quantities to the natural-unit convention of Definition~\ref{def:natural-fixed}, expressing masses and energies as frequencies;
+    \item choosing a bip duration $\Delta t_{\ast}$ as in Definition~\ref{def:phys-time};
+    \item mapping physical frequencies $\nu_{\mathrm{phys}}$ to substrate frequencies by
+    \[
+        \nu_{\mathrm{sub}} = \nu_{\mathrm{phys}} \,\Delta t_{\ast}.
+    \]
+\end{enumerate}
+This bridge fixes how many bips correspond to a given physical time interval and leaves the integer relations inside AFC unchanged.
+\end{definition}
+
+\subsection{Substrate purity and translation layer}\label{subsec:substrate-purity}
+
+\begin{definition}[Substrate purity]\label{def:substrate-purity}
+The AFC substrate is specified by:
+\begin{itemize}
+    \item the bip index $t \in \mathbb{Z}$;
+    \item ternary outcomes $\tau_t(e) \in T$ on seats $e \in E$;
+    \item node ledgers $n_t : V \to \mathbb{Z}_3$ and associated Memora.
+\end{itemize}
+Dimensional physical constants are not part of these objects or of the update rules derived from the AFC axiom. Symbols such as $G$, $c$, and $\hbar$ appear only in the translation layer.
+\end{definition}
+
+\begin{definition}[Translation layer]\label{def:translation-layer}
+A translation layer consists of:
+\begin{itemize}
+    \item the fixed natural-unit convention of Definition~\ref{def:natural-fixed};
+    \item a choice of external unit system (for example, the 2018 SI system) with numerical values assigned to $(c,\hbar,G)$ in those units;
+    \item a map from substrate periods and frequencies $(\tau,\nu_{\mathrm{sub}})$ to external quantities (times, masses, energies) using these constants and a bip duration $\Delta t_{\ast}$ as in Definition~\ref{def:phys-time}.
+\end{itemize}
+The translation layer acts on input data and reported results. The substrate state and its evolution remain expressed in terms of bip indices, ternary outcomes, and ledgers.
+\end{definition}
+
+\begin{remark}[Role of constants]\label{rem:constants-role}
+Within a translation layer, the symbols $G$, $c$, and $\hbar$ parameterise the map between substrate counts and external units as specified in Definition~\ref{def:translation-layer}. They are not axioms of AFC and do not enter the counts-first derivations based on the Null Infinite Potential and ternary outcomes.
+\end{remark}
+
+\begin{consequence}[Reporting format]\label{cons:reporting-format}
+Given a translation layer, substrate quantities such as $\tau$ [bip] and $\nu_{\mathrm{sub}}$ [bip$^{-1}$] can be reported in their native form and, via the translation map, in an external unit system. This changes the presentation of numerical values and leaves the underlying integer relations and counts-first identities of AFC unchanged.
+\end{consequence}
+
+\subsection{Reference calibration for Earth test plans}\label{subsec:earth-calibration}
+
+\begin{definition}[Earth reference calibration]\label{def:earth-calibration}
+For a declared Earth test environment, let $t_{\mathrm{P}}$ denote the Planck time in the chosen external unit system determined by $(c,\hbar,G)$ of Definition~\ref{def:natural-fixed}. A reference calibration is given by choosing
+\[
+    \Delta t_{\ast} = k \, t_{\mathrm{P}},
+\]
+for some integer $k \ge 1$, and setting $t = 0$ at a designated reference bip. Under this calibration, the bip index determines physical times as integer multiples of $t_{\mathrm{P}}$ (up to the factor $k$) for that environment. This choice fixes the relation between substrate counts and the external time axis for the Earth test plans and does not modify the internal AFC rules.
+\end{definition}

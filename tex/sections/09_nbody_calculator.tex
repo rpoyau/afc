@@ -1,0 +1,59 @@
+\section{\texorpdfstring{$n$}{n}-Body Usage}\label{sec:nbody-usage}
+
+\begin{definition}[$n$-body state on a plan]\label{def:nbody-state}
+Let $(V,E)$ be a finite directed graph (plan) with nodes $V$ and seats $E \subseteq V \times V$. An $n$-body state on this plan at bip $t \in \mathbb{Z}$ consists of:
+\begin{itemize}
+    \item a finite body set $B \subseteq V$;
+    \item a node ledger $n_t : V \to \mathbb{Z}_3$;
+    \item an internal state map $s_t : B \to S$ into a finite or countable state space $S$.
+\end{itemize}
+The ternary outcomes on seats at bip $t$ are $\tau_t : E \to T$, with $T=\{-1,0,+1\}$, obtained from the stochastic driver on admissible seats.
+\end{definition}
+
+\begin{consequence}[Single-bip $n$-body update]\label{cons:nbody-step}
+Given an $n$-body state $(V,E,B,n_t,s_t)$ as in Definition~\ref{def:nbody-state}, a single bip update $t \to t+1$ is defined by:
+\begin{enumerate}
+    \item \textbf{Outcome sampling.} For each admissible seat $e \in E$ at bip $t$, sample $\tau_t(e) \in T$ from the ternary kernel specified on that seat.
+    \item \textbf{Production.} For each node $x \in V$, compute the integer production
+    \[
+        \Delta n_t(x)
+        :=
+        \sum_{e: e \to x} \tau_t(e)
+        -
+        \sum_{e: x \to e} \tau_t(e).
+    \]
+    \item \textbf{Ledger update (TXOR).} For each node $x \in V$, update the ledger by
+    \[
+        n_{t+1}(x) := n_t(x) \oplus_3 \Delta n_t(x),
+    \]
+    where $\oplus_3$ is addition modulo $3$.
+    \item \textbf{Internal state update.} For each body $b \in B$, update its internal state by a local map
+    \[
+        s_{t+1}(b)
+        :=
+        F_b\bigl(
+            b,\,
+            s_t(b),\,
+            n_t(b),\,
+            \Delta n_t(b),\,
+            \{\tau_t(e): e \text{ incident to } b\}
+        \bigr),
+    \]
+    where $F_b$ is declared as part of the model and depends only on information at $b$ and its incident seats.
+\end{enumerate}
+The tuple $(V,E,B,n_{t+1},s_{t+1})$ is the $n$-body state at bip $t+1$.
+\end{consequence}
+
+\begin{consequence}[Locality]\label{cons:nbody-local}
+The update in Consequence~\ref{cons:nbody-step} is local. For each body $b \in B$, the new internal state $s_{t+1}(b)$ depends only on:
+\begin{itemize}
+    \item the previous internal state $s_t(b)$;
+    \item the ledger $n_t(b)$ and production $\Delta n_t(b)$ at node $b$;
+    \item the ternary outcomes $\tau_t(e)$ on seats incident to $b$.
+\end{itemize}
+There is no direct dependence on distant nodes; all interactions are mediated by seat outcomes and ledger updates.
+\end{consequence}
+
+\begin{remark}[Complexity scaling]\label{rem:nbody-scaling}
+Let $N := |V|$ and assume the plan is sparse, so that $|E| = O(N)$. A direct implementation of the update in Consequence~\ref{cons:nbody-step} has cost $O(|E|)$, which is $O(N)$, per bip. With hierarchical structures for neighbourhood and region queries, composite operations such as enforcing discrete divergence constraints via the counts-first Stokes identity can be organised in essentially $O(N \log N)$ time per bip.
+\end{remark}

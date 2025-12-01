@@ -1,0 +1,85 @@
+\section{TXOR Ledger and Parity}\label{sec:txor-parity}
+
+\begin{definition}[Node ledger]\label{def:ledger}
+For a finite plan with node set $V$, a \emph{node ledger} at tally $t$ is a map
+\[
+    n_t : V \to \mathbb{Z}_3.
+\]
+\end{definition}
+
+\begin{definition}[Ternary exclusive OR (TXOR)]\label{def:txor}
+For $a,b \in \mathbb{Z}_3$, the ternary exclusive OR is
+\[
+    a \oplus_3 b := (a + b) \bmod 3.
+\]
+\end{definition}
+
+\begin{consequence}[Local TXOR update]\label{cons:txor-update}
+Let $\Delta n_t(x)$ be the production at node $x$ over $t \to t+1$ as in Definition~\ref{def:flux-prod}. A node ledger update compatible with Counts-First Stokes is
+\[
+    n_{t+1}(x) = n_t(x) \oplus_3 \Delta n_t(x),
+\]
+for all $x \in V$ and all tallies $t$.
+\end{consequence}
+
+\begin{consequence}[Global $\mathbb{Z}_3$ invariance]\label{cons:z3-sum}
+Let
+\[
+    S_t := \sum_{x \in V} n_t(x) \;\in\; \mathbb{Z}_3.
+\]
+By Consequence~\ref{cons:global},
+\[
+    \sum_{x \in V} \Delta n_t(x) = 0
+\]
+for every tally $t$, hence
+\[
+    S_{t+1}
+    = \sum_{x \in V} n_{t+1}(x)
+    = \sum_{x \in V} \bigl(n_t(x) + \Delta n_t(x)\bigr)
+    \equiv S_t \pmod 3.
+\]
+The total node ledger sum in $\mathbb{Z}_3$ is invariant under the TXOR update.
+\end{consequence}
+
+\begin{definition}[XOR ledger]\label{def:xor-ledger}
+An \emph{XOR ledger} for a plan is a map
+\[
+    q_t : V \to \mathbb{Z}_2
+\]
+updated by
+\[
+    q_{t+1}(x)
+    = q_t(x) \oplus_2 \bigl( \Delta n_t(x) \bmod 2 \bigr),
+\]
+where $\oplus_2$ is addition modulo $2$.
+\end{definition}
+
+\begin{consequence}[Parity invariance]\label{cons:parity}
+On a closed plan, Consequence~\ref{cons:global} gives
+\[
+    \sum_{x \in V} \Delta n_t(x) = 0
+\]
+for every tally $t$. Reducing modulo $2$ yields
+\[
+    \sum_{x \in V} \bigl(\Delta n_t(x) \bmod 2\bigr) \equiv 0 \pmod 2,
+\]
+and
+\[
+    \sum_{x \in V} q_{t+1}(x)
+    \equiv
+    \sum_{x \in V} q_t(x) \pmod 2.
+\]
+The total XOR ledger sum in $\mathbb{Z}_2$ is invariant under the update of Definition~\ref{def:xor-ledger}.
+\end{consequence}
+
+\begin{falsifier}[TXOR parity breakdown]\label{fals:txor}
+On a declared closed plan, if integer conservation holds,
+\[
+    \sum_{x \in V} \Delta n_t(x) = 0 \quad \text{for all } t,
+\]
+but the XOR ledger sum fails to be invariant,
+\[
+    \sum_{x \in V} q_{t+1}(x) \not\equiv \sum_{x \in V} q_t(x) \pmod 2
+\]
+for some tally $t$, then the TXOR ledger update of Consequence~\ref{cons:txor-update} is falsified on that plan.
+\end{falsifier}

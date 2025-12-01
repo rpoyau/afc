@@ -1,0 +1,64 @@
+% ===================== AFC Mark 2 — preamble (pdfLaTeX) ======================
+
+% Core math and layout
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+% ================= Unicode + code safety (pdfLaTeX) =================
+% Keep sources unchanged; map the few Unicode glyphs used in the project.
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}       % extra text symbols (e.g., en/em dash handling)
+\usepackage{newunicodechar}
+
+% Greek letters actually appearing in the sources
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+
+% Arrows and relations
+\newunicodechar{⇒}{\Rightarrow}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{↔}{\ensuremath{\leftrightarrow}}
+
+% Comparators and math symbols
+\newunicodechar{≥}{\ensuremath{\ge}}
+\newunicodechar{≤}{\ensuremath{\le}}
+\newunicodechar{±}{\ensuremath{\pm}}
+\newunicodechar{×}{\ensuremath{\times}}
+
+% Typography
+\newunicodechar{—}{\textemdash}   % em dash
+\newunicodechar{–}{\textendash}   % en dash
+\newunicodechar{…}{\ldots}        % ellipsis
+
+% Project convenience macros
+\newcommand{\AO}{A\ensuremath{\Omega}} % use \AO{} instead of raw “AΩ” if you like
+
+% Code-like tokens with underscores/braces, safe even in headings/captions:
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+% Example: \code{R_3}, \code{duon_{2n}}, \code{dark-ual_{2n}}
+% ====================================================================
+
+% --------------------- Theorem-like environments ----------------------------
+\theoremstyle{definition}
+\newtheorem{axiom}{Axiom}
+\newtheorem{definition}{Definition}
+\newtheorem{choice}{Choice}
+\newtheorem{consequence}{Consequence}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{remark}{Remark}
+\newtheorem{falsifier}{Falsifier}
+
+% --------------------- Project convenience symbols --------------------------
+\newcommand{\bip}{\mathrm{bip}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\trits}{\{-1,0,+1\}}
+
+% ============================================================================

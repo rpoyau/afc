@@ -1,0 +1,76 @@
+\section{Bridge to General Mechanics}\label{sec:gm-bridge}
+
+\begin{definition}[Discrete currents and productions]\label{def:discrete-currents}
+On a finite plan $(V,E)$ with ternary outcomes $\tau_t(e)$ and node ledgers $n_t(x)$, the expected current $J$ and production $\sigma$ on a declared time window are
+\[
+    J(e) := \mathbb{E}[\tau_t(e)], \qquad e \in E,
+\]
+\[
+    \sigma(x) := \mathbb{E}[\Delta n_t(x)], \qquad x \in V,
+\]
+where $\Delta n_t(x) := n_{t+1}(x) - n_t(x)$ is the node production. The discrete divergence $\delta J$ is
+\[
+    (\delta J)(x)
+    :=
+    \sum_{e: e \to x} J(e)
+    -
+    \sum_{e: x \to e} J(e).
+\]
+The counts-first Stokes identity on a region $U \subseteq V$ with boundary chain $\partial U$ is
+\[
+    \sum_{e \in \partial U} J(e)
+    =
+    \sum_{x \in U} \sigma(x).
+\]
+\end{definition}
+
+\begin{definition}[GM current and source]\label{def:gm-fields}
+In a General Mechanics (GM) presentation on a smooth domain $D$ with boundary $\partial D$ as in~\cite{reginald2025gm}, a current is a differential $1$-form $j$ (or vector field) and a source density is a scalar field $\rho$. The GM Stokes identity is
+\[
+    \int_{\partial D} *j
+    =
+    \int_{D} \rho \,\mathrm{vol},
+\]
+where $*$ is the Hodge dual and $\mathrm{vol}$ is the volume form. The associated local relation is $\nabla \cdot j = \rho$.
+\end{definition}
+
+\begin{definition}[Discrete-to-GM mapping]\label{def:discrete-gm-map}
+Let a family of finite plans $(V_h,E_h)$ approximate a domain $D$ as a mesh parameter $h \to 0$, with regions $U_h \subseteq V_h$ approximating measurable subsets $U \subseteq D$. A discrete-to-GM mapping consists of:
+\begin{itemize}
+    \item a calibration of the bip and counting scale to a physical time and volume scale, as in the units and calibration section;
+    \item an assignment $J_h \mapsto j$ and $\sigma_h \mapsto \rho$ such that discrete sums over $U_h$ and $\partial U_h$ converge to the corresponding integrals over $U$ and $\partial U$ when $h \to 0$.
+\end{itemize}
+The mapping is declared for a given approximation scheme and is not part of the AFC axioms.
+\end{definition}
+
+\begin{theorem}[Stokes correspondence]\label{thm:gm-stokes}
+Let $(V_h,E_h)$ approximate a domain $D$ and let $J_h,\sigma_h$ be discrete currents and productions satisfying
+\[
+    \delta J_h = \sigma_h
+\]
+and
+\[
+    \sum_{e \in \partial U_h} J_h(e)
+    =
+    \sum_{x \in U_h} \sigma_h(x)
+\]
+for all regions $U_h \subseteq V_h$. Suppose a discrete-to-GM mapping as in Definition~\ref{def:discrete-gm-map} is fixed, with $J_h \mapsto j$ and $\sigma_h \mapsto \rho$ in the limit $h \to 0$. Then, for any measurable region $U \subseteq D$ obtained as the limit of regions $U_h$,
+\[
+    \int_{\partial U} *j
+    =
+    \int_{U} \rho \,\mathrm{vol}
+\]
+holds as the continuum counterpart of the discrete counts-first Stokes identity.
+\end{theorem}
+
+\begin{consequence}[Current decomposition and Helmholtz]\label{cons:gm-helmholtz}
+On each finite plan $(V_h,E_h)$, the expected current admits a decomposition
+\[
+    J_h = \nabla \Phi_h + h_h,
+\]
+where $\Phi_h$ is a node potential and $h_h$ is a harmonic current with $\delta h_h = 0$. Under a discrete-to-GM mapping for a family of plans approximating a domain $D$, this decomposition corresponds to a Helmholtz decomposition of the continuum field:
+\[
+    j = \nabla \phi + j_{\mathrm{harm}},
+\]
+where $\phi$ is a scalar potential and $j_{\mathrm{harm}}$ is divergence-free. The discrete split is the combinatorial counterpart of the continuum Helmholtz structure in the GM presentation~\cite{reginald2025gm}.
+\end{consequence}

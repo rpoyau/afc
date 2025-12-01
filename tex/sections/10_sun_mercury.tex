@@ -1,0 +1,86 @@
+\section{Example: Two-Body Plan (Sun--Mercury)}\label{sec:sun-mercury}
+
+\begin{definition}[Two-body ring plan]\label{def:two-body-plan}
+A two-body ring plan is a finite plan $(V,E)$ together with:
+\begin{itemize}
+    \item a cycle $C_N$ with node set $\{0,1,\dots,N-1\}$ and oriented seats
+    \[
+        e_i : i \to (i+1) \bmod N, \quad i = 0,\dots,N-1;
+    \]
+    \item a distinguished central node $\sigma$ (Sun);
+    \item a body set $B = \{\sigma,M\}$, where $M$ is the Mercury body;
+    \item a node ledger $n_t : V \to \mathbb{Z}_3$ and an internal state map
+    \[
+        s_t : B \to S,
+    \]
+    where $S$ contains a phase index component $k_t \in \{0,\dots,N-1\}$ for $M$, indicating its position on $C_N$ at bip $t$.
+\end{itemize}
+The global evolution of $(V,E,B,n_t,s_t)$ per bip is given by the $n$-body update in Consequence~\ref{cons:nbody-step}.
+\end{definition}
+
+\begin{definition}[Orbital kernel and phase increment]\label{def:mercury-kernel}
+Let $T=\{-1,0,+1\}$ be the ternary alphabet. For the Mercury body $M$, declare:
+\begin{itemize}
+    \item a ternary kernel $K_{\mathrm{orb}}$ on $T$ used to sample outcomes on tangential seats incident to $M$;
+    \item a map
+    \[
+        G_{\mathrm{orb}} : T^{d_M} \to \{-1,0,+1\},
+    \]
+    where $d_M$ is the number of tangential seats incident to $M$, mapping the incident outcomes at bip $t$ to a phase increment $\Delta k_t$.
+\end{itemize}
+The expected phase increment per bip at the chosen ring radius is set by calibration to a target substrate orbital frequency $\nu_{\mathrm{sub}}$ as in Section~\ref{sec:units}, so that
+\[
+    \mathbb{E}[\Delta k_t] = N\,\nu_{\mathrm{sub}} \bmod N.
+\]
+\end{definition}
+
+\begin{consequence}[Specialisation of the $n$-body update]\label{cons:sun-mercury-nbody}
+On the two-body ring plan of Definition~\ref{def:two-body-plan}, the $n$-body update (Consequence~\ref{cons:nbody-step}) is specialised as follows for $M$:
+\begin{enumerate}
+    \item Outcomes $\tau_t(e)$ are sampled on all seats $e \in E$ using the kernels declared on the plan, including $K_{\mathrm{orb}}$ on tangential seats incident to $M$.
+    \item The ledger $n_t$ is updated to $n_{t+1}$ at all nodes by
+    \[
+        n_{t+1}(x) = n_t(x) \oplus_3 \Delta n_t(x).
+    \]
+    \item The internal state of $M$ is updated by a local map
+    \[
+        s_{t+1}(M)
+        =
+        F_M\bigl(
+            M,\,
+            s_t(M),\,
+            n_t(M),\,
+            \Delta n_t(M),\,
+            \{\tau_t(e): e \text{ incident to } M\}
+        \bigr),
+    \]
+    where $F_M$ acts on the phase component by
+    \[
+        k_{t+1} := (k_t + \Delta k_t) \bmod N,
+    \]
+    with $\Delta k_t = G_{\mathrm{orb}}(\{\tau_t(e)\}_{e \text{ tangential to } M})$.
+\end{enumerate}
+The Sun body $\sigma$ may have a static internal state or a declared internal evolution; this does not change the form of the update.
+\end{consequence}
+
+\begin{definition}[Orbital measurement]\label{def:mercury-measurement}
+For a time window of $T$ bips, the phase history of $M$ is the sequence $(k_t)_{t=0}^{T-1}$ extracted from $s_t(M)$. The empirical substrate orbital frequency is
+\[
+    \nu_{\mathrm{meas}}(T)
+    :=
+    \frac{1}{2\pi T}
+    \sum_{t=0}^{T-1}
+        \bigl(\theta_{t+1} - \theta_t\bigr) \bmod 2\pi,
+\]
+where $\theta_t := 2\pi k_t/N$. Using the calibration in Section~\ref{sec:units}, this can be reported as a physical orbital period for comparison with external Sun--Mercury data.
+\end{definition}
+
+\begin{remark}[Reference implementation]\label{rem:sun-mercury-impl}
+An external script can realise Consequence~\ref{cons:sun-mercury-nbody} by:
+\begin{itemize}
+    \item sampling $\tau_t(e)$ on the ring plan using the declared kernels;
+    \item updating $n_{t+1}$ and $s_{t+1}$ via the generic $n$-body step;
+    \item reading out $(k_t)$ from $s_t(M)$ and mapping to angles $\theta_t$ and planar coordinates for plotting.
+\end{itemize}
+The two-body Sun--Mercury test is thus implemented as a special case of the general $n$-body calculator.
+\end{remark}

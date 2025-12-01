@@ -1,0 +1,34 @@
+\section{Falsification Hooks}\label{sec:falsifiers}
+
+\begin{falsifier}[Stokes failure]\label{fals:stokes}
+Consider a declared source-free, simply connected patch of a plan. If the empirical loop sum of the integer flux on this patch satisfies
+\[
+    \sum_{e \in \partial U} \tau_t^{\mathrm{in}}(e) \ne 0
+\]
+for some tally $t$, Counts-First Stokes (Theorem~\ref{thm:stokes}) is falsified on that patch.
+\end{falsifier}
+
+\begin{falsifier}[Capacity violation]\label{fals:capacity}
+On a declared plan, if for some seat $e \in E$ and tally $t$ more than one non-zero outcome is realised,
+\[
+    \tau_t(e) \in T \setminus \{0\}
+    \quad \text{for more than one independent event at the same } (e,t),
+\]
+the capacity-one assumption (Consequence~\ref{cons:plan}) is violated and the finite plan representation is falsified on that plan.
+\end{falsifier}
+
+\begin{falsifier}[Parity breakdown]\label{fals:parity}
+On a closed plan, if integer conservation holds,
+\[
+    \sum_{x \in V} \Delta n_t(x) = 0 \quad \text{for all } t,
+\]
+but the XOR ledger sum of Definition~\ref{def:xor-ledger} fails to be invariant,
+\[
+    \sum_{x \in V} q_{t+1}(x) \not\equiv \sum_{x \in V} q_t(x) \pmod 2
+\]
+for some tally $t$, then the TXOR ledger update (Consequence~\ref{cons:txor-update}) is falsified on that plan.
+\end{falsifier}
+
+\begin{falsifier}[Memorum anomaly]\label{fals:memorum}
+Suppose an experimental protocol infers observer memory patterns over multiple scales and orientations. If the resulting Memora cannot be embedded as finite replications and isotropic relabellings inside a single fractal, scale-invariant structure, the Memorum properties of Consequence~\ref{cons:fractal-memorum} and the assumptions of A5 are falsified for that protocol.
+\end{falsifier}

@@ -1,0 +1,76 @@
+\section{Current Decomposition}\label{sec:current-decomposition}
+
+\begin{definition}[Expected current and production]\label{def:expected-current}
+Fix a finite sampling window of tallies $t = 0,\dots,T_{\max}-1$. For a finite plan with flux $\tau_t$ and production $\Delta n_t$ as in Definition~\ref{def:flux-prod}, the \emph{expected current} and \emph{expected production} are
+\[
+    J(e) := \frac{1}{T_{\max}} \sum_{t=0}^{T_{\max}-1} \tau_t(e)
+    \quad \text{for } e \in E,
+    \qquad
+    \sigma(x) := \frac{1}{T_{\max}} \sum_{t=0}^{T_{\max}-1} \Delta n_t(x)
+    \quad \text{for } x \in V,
+\]
+equivalently $J(e) = \mathbb{E}[\tau_t(e)]$ and $\sigma(x) = \mathbb{E}[\Delta n_t(x)]$ with expectation taken over the declared window. These define the coarse-grained current and source per tally.
+\end{definition}
+
+\begin{definition}[Divergence of the current]\label{def:div-current}
+For a current field $J : E \to \mathbb{R}$ on a finite directed graph with node set $V$, the \emph{divergence} at node $x \in V$ is
+\[
+    (\delta J)(x)
+    :=
+    \sum_{e: e \to x} J(e)
+    \;-\;
+    \sum_{e: x \to e} J(e).
+\]
+\end{definition}
+
+\begin{consequence}[Counts-first current equation]\label{cons:div-current-eq}
+For $J$ and $\sigma$ as in Definition~\ref{def:expected-current}, Counts-First Stokes and linearity of the average give
+\[
+    \delta J = \sigma
+\]
+on $V$.
+\end{consequence}
+
+\begin{definition}[Node potential and gradient current]\label{def:grad-current}
+A \emph{node potential} is a map $\Phi : V \to \mathbb{R}$. Its associated \emph{gradient current} is the field
+\[
+    (\nabla \Phi)(u \to v) := \Phi(v) - \Phi(u)
+\]
+for each seat $(u \to v) \in E$.
+\end{definition}
+
+\begin{definition}[Harmonic current]\label{def:harmonic-current}
+A current field $h : E \to \mathbb{R}$ is \emph{harmonic} if its divergence vanishes:
+\[
+    \delta h(x) = 0 \quad \text{for all } x \in V.
+\]
+\end{definition}
+
+\begin{theorem}[Current decomposition]\label{thm:current-dec}
+Let $J : E \to \mathbb{R}$ be an expected current field on a finite connected graph with node set $V$ and seat set $E$. There exist
+\begin{itemize}
+    \item a node potential $\Phi : V \to \mathbb{R}$,
+    \item a harmonic current field $h : E \to \mathbb{R}$,
+\end{itemize}
+such that
+\[
+    J = \nabla \Phi + h.
+\]
+The divergence of $J$ is carried entirely by the gradient part:
+\[
+    \delta J = \delta(\nabla \Phi) = \sigma,
+\]
+and $h$ is divergence-free:
+\[
+    \delta h = 0.
+\]
+The decomposition is unique up to an additive constant in $\Phi$.
+\end{theorem}
+
+\begin{consequence}[Simply connected patches]\label{cons:current-simple}
+On a simply connected finite patch (no nontrivial cycles), every harmonic current field is trivial, $h = 0$, and the expected current is purely potential:
+\[
+    J = \nabla \Phi.
+\]
+On patches with nontrivial cycle space, harmonic current is supported exactly on those cycles and represents current patterns with zero net production in every region.
+\end{consequence}

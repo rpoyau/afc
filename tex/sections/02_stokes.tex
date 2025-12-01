@@ -1,0 +1,85 @@
+\section{Immediate Consequences: Ternary and Stokes}\label{sec:stokes}
+
+\begin{consequence}[C6: Null aggregation]\label{cons:null-agg}
+For any finite integer $K \ge 1$,
+\[
+    \bigoplus_{i=1}^{K} \varnothing \;\equiv\; \varnothing.
+\]
+In particular, for $K = 2$,
+\[
+    \varnothing \oplus \varnothing \;\equiv\; \varnothing.
+\]
+\end{consequence}
+
+\begin{consequence}[C7: Ternary roles and alphabet]\label{cons:ternary}
+The identity $\varnothing \oplus \varnothing \equiv \varnothing$ has three roles: left operand, right operand, and result. A minimal encoding of these roles uses the ternary alphabet
+\[
+    T := \{-1,0,+1\}.
+\]
+\end{consequence}
+
+\begin{consequence}[C8: Uniform kernel]\label{cons:uniform}
+For the alphabet $T$ of Consequence~\ref{cons:ternary}, the step-local prior consistent with Axiom~\ref{ax:a1} is the symmetric kernel
+\[
+    \mathbb P(-1) = \mathbb P(0) = \mathbb P(+1) = \tfrac{1}{3},
+\]
+until additional structure is declared.
+\end{consequence}
+
+\begin{consequence}[C9: Finite plan representation]\label{cons:plan}
+A finite plan is represented by:
+\begin{itemize}
+    \item a finite directed graph with node set $V$ and seat set $E \subseteq V \times V$;
+    \item an integer tally $t \in \mathbb{Z}$;
+    \item a ternary outcome $\tau_t(e) \in T$ on each seat $e \in E$ at each tally, with capacity one outcome per seat per tally.
+\end{itemize}
+\end{consequence}
+
+\begin{definition}[Flux and production]\label{def:flux-prod}
+For a plan as in Consequence~\ref{cons:plan}, the \emph{flux} at tally $t$ is the map
+\[
+    \tau_t : E \to T.
+\]
+For each node $x \in V$, the \emph{production} over $t \to t+1$ is
+\[
+    \Delta n_t(x)
+    :=
+    \sum_{e: e \to x} \tau_t(e)
+    \;-\;
+    \sum_{e: x \to e} \tau_t(e).
+\]
+\end{definition}
+
+\begin{theorem}[Counts-First Stokes]\label{thm:stokes}
+Let $U \subseteq V$ be a finite set of nodes and let $\partial U$ be the set of seats with exactly one endpoint in $U$. Then, for a single tally step,
+\[
+    \sum_{e \in \partial U} \tau_t^{\mathrm{in}}(e)
+    \;=\;
+    \sum_{x \in U} \Delta n_t(x),
+\]
+where $\tau_t^{\mathrm{in}}(e)$ is $\tau_t(e)$ counted inward into $U$ along $e$.
+\end{theorem}
+
+\begin{consequence}[C10: Global Stokes]\label{cons:global}
+If $U = V$ so that $\partial U = \emptyset$, Theorem~\ref{thm:stokes} gives
+\[
+    \sum_{x \in V} \Delta n_t(x) = 0
+\]
+for every tally $t$.
+\end{consequence}
+
+\begin{consequence}[C11: Generalized Stokes]\label{cons:gen-stokes}
+Let $U = \bigsqcup_{i=1}^{k} U_i$ be a finite disjoint partition of $U$. For each $U_i$, let $\partial U_i$ be its boundary seats and let $\sigma(x) := \Delta n_t(x)$. Then
+\[
+    \sum_{e \in \partial U_i} \tau_t^{\mathrm{in}}(e) = \sum_{x \in U_i} \sigma(x)
+    \quad \text{for each } i,
+\]
+and
+\[
+    \sum_{e \in \partial U} \tau_t^{\mathrm{in}}(e)
+    = \sum_{i=1}^{k} \sum_{e \in \partial U_i} \tau_t^{\mathrm{in}}(e)
+    = \sum_{i=1}^{k} \sum_{x \in U_i} \sigma(x)
+    = \sum_{x \in U} \sigma(x).
+\]
+The Stokes identity is invariant under finite coarse-grainings of $U$.
+\end{consequence}
