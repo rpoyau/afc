@@ -1,105 +1,76 @@
-name: Build PDF
+name: Build AF Protocol PDF
 
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    # TRIGGER ON ANY BRANCH OR TAG PUSH
+    # Remove the specific 'branches' filter to allow dynamic runs
     paths:
-      - 'tex/**'
-      - '.github/workflows/build-pdf.yml' # <-- This is the fix
+      - '**/*.tex'
+      - '**/*.bib'
+      - '.github/workflows/build-pdf.yml'
   pull_request:
     paths:
-      - 'tex/**'
-      - '.github/workflows/build-pdf.yml' # <-- And this is the fix
+      - '**/*.tex'
+      - '**/*.bib'
+      - '.github/workflows/build-pdf.yml'
 
 jobs:
-  latex:
+  build_latex:
     runs-on: ubuntu-latest
     permissions:
-      contents: read       # needed by actions/checkout
-      pull-requests: write # you already wanted this
+      contents: read
+      pull-requests: write
 
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
-      # 1. Install and Update TinyTeX (Runs every time)
-      - name: Install and Update TinyTeX
+      - name: Install TinyTeX and Packages
         shell: bash
         run: |
-          # Exit immediately if any command fails
-          set -e
-
-          echo "Installing TinyTeX and packages..."
-
-          # Install TinyTeX base
+          # 1. Install TinyTeX
           wget -qO- "https://yihui.org/tinytex/install-bin-unix.sh" | sh
-
-          # Add the TinyTeX bin directory to the PATH for the current shell
-          export PATH=$HOME/bin:$PATH
-
-          # Update tlmgr and all packages to ensure freshness
-          ~/bin/tlmgr update --self --all
-
-          # Install packages one by one for superior error reporting.
-          for pkg in latexmk xetex \
-            geometry amsmath amsfonts mathtools \
-            physics microtype enumitem siunitx booktabs pgf \
-            hyperref cleveref placeins; do
-            echo "Attempting to install: $pkg"
-            # Use the conditional execution to explicitly report the failing package
-            ~/bin/tlmgr install "$pkg" || { echo "ERROR: Failed to install LaTeX package '$pkg'. Please check spelling or availability."; exit 1; }
-          done
-
-      # 2. Add TinyTeX to PATH (for subsequent steps to find latexmk)
-      - name: Add TinyTeX to PATH
-        run: echo "$HOME/bin" >> $GITHUB_PATH
-
-      # 3. Compile (now using the freshly installed environment)
-      - name: Compile main.tex
-        working-directory: tex
-        run: |
-          # Explicitly set PATH just in case (AF-compliant firewall)
           export PATH="$HOME/bin:$PATH"
-          latexmk -xelatex -interaction=nonstopmode -halt-on-error main.tex
+          
+          # 2. Update tlmgr
+          tlmgr update --self
+          
+          # 3. Install Basic Requirements
+          tlmgr install latexmk xetex
+          
+          # 4. Install Document Dependencies (The "Meat")
+          tlmgr install \
+            geometry \
+            amsmath \
+            amsfonts \
+            amscls \
+            mathtools \
+            hyperref \
+            enumitem \
+            booktabs \
+            newunicodechar \
+            url
 
-      # 4. Create smart filename
-      - name: Create smart filename
+      - name: Compile PDF
         shell: bash
         run: |
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            NAME="afc-PR${{ github.event.pull_request.number }}"
-          else
-            NAME="afc-$(date +%F)"
-          fi
-          # Note: The original path 'tex/main.pdf' is assumed to be correct
-          cp tex/main.pdf "$NAME.pdf"
-          echo "PDF=$NAME.pdf" >> $GITHUB_ENV
+          export PATH="$HOME/bin:$PATH"
+	  pushd tex
+          latexmk -xelatex -synctex=1 -interaction=nonstopmode -file-line-error -halt-on-error main.tex
+	  popd
 
-      # 5. Upload PDF
-      - name: Upload PDF
+      - name: Rename Artifact (Dynamic Versioning)
+        run: |
+          # Get the branch name or tag name
+          REF_NAME=${GITHUB_REF_NAME//\//-}
+          # Rename file to include the branch name
+          mv tex/main.pdf "AFC_Stokes_Protocol_${REF_NAME}.pdf"
+          # Save the filename to an environment variable for the next step
+          echo "PDF_NAME=AFC_Stokes_Protocol_${REF_NAME}.pdf" >> $GITHUB_ENV
+
+      - name: Upload PDF Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.PDF }}
-          path: ${{ env.PDF }}
-
-      # 6. Comment on PR
-      - name: Comment on PR
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const name = process.env.PDF;
-            const runId = process.env.GITHUB_RUN_ID;
-            const repo = context.repo.repo;
-            const owner = context.repo.owner;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner,
-              repo,
-              body: `📄 **acf PDF preview**\n\n` +
-                    `The build artifact is attached to this workflow run.\n\n` +
-                    `➡️ **Download**: look for **${name}** in the "Artifacts" section of the run.`
-            });
+          name: ${{ env.PDF_NAME }}
+          path: ${{ env.PDF_NAME }}
