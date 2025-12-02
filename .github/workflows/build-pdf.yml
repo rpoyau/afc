@@ -27,11 +27,32 @@ jobs:
       - name: Install TinyTeX and Packages
         shell: bash
         run: |
+          # 1. Install TinyTeX
           wget -qO- "https://yihui.org/tinytex/install-bin-unix.sh" | sh
           export PATH="$HOME/bin:$PATH"
+          
+          # 2. Update tlmgr to ensure we can find packages
           tlmgr update --self
-          # Installing all required packages including amscls for theorem environments
-          tlmgr install latexmk xetex geometry amsmath amsfonts amscls mathtools hyperref enumitem booktabs newunicodechar url
+          
+          # 3. Install the critical packages
+          # We add 'microtype', 'amscls', 'graphics', 'tools' (for calc/bm), 'oberdiek' (for compatibility)
+          tlmgr install \
+            latexmk \
+            xetex \
+            geometry \
+            amsmath \
+            amsfonts \
+            amscls \
+            mathtools \
+            hyperref \
+            enumitem \
+            booktabs \
+            newunicodechar \
+            url \
+            microtype \
+            graphics \
+            tools \
+            oberdiek
 
       - name: Compile PDF
         shell: bash
@@ -41,10 +62,10 @@ jobs:
           # Debug: List files to confirm structure
           ls -R
           
-          # FIX 1: Enter the subdirectory containing main.tex
+          # FIX: Ensure we are in the right directory
           cd tex
           
-          # Run latexmk inside the directory
+          # Run latexmk with xelatex
           latexmk -xelatex -synctex=1 -interaction=nonstopmode -file-line-error -halt-on-error main.tex
 
       - name: Rename Artifact (Dynamic Versioning)
@@ -52,10 +73,10 @@ jobs:
           # Sanitize branch name
           REF_NAME=${GITHUB_REF_NAME//\//-}
           
-          # FIX 2: The PDF is now inside 'tex/', so we move it from there to the root with the new name
+          # FIX: The PDF is inside 'tex/', move it to root
           mv tex/main.pdf "AFC_Stokes_Protocol_${REF_NAME}.pdf"
           
-          # Save the new filename for the upload step
+          # Save filename for upload
           echo "PDF_NAME=AFC_Stokes_Protocol_${REF_NAME}.pdf" >> $GITHUB_ENV
 
       - name: Upload PDF Artifact
