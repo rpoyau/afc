@@ -1,8 +1,6 @@
-Here’s a complete `README.md` you can drop at the root of the repo.
-
-````markdown
 # Axiomatic Fundamentalism Calculus (AFC)
 ## The Hidden Form of Stokes
+[![DOI](https://zenodo.org/badge/1106264434.svg)](https://doi.org/10.5281/zenodo.17795590)
 
 > *Axioms → Distinctions → Relations → Motifs → Math.*  
 > *This is the way.*
