@@ -83,7 +83,7 @@ The document is organised to follow the AF pipeline:
 │   └── 00_stokes.tex
 ├── appendices
 │   └── 00_capacity.tex
-└── bib.bib
+└── refs.bib
 ````
 
 ### `main.tex`
