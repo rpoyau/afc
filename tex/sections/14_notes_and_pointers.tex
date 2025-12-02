@@ -1,9 +1,0 @@
-\section{Notes and Pointers}\label{sec:notes}
-
-\begin{remark}[Algorithmic scaling]\label{rem:alg-scaling}
-On a finite plan with node set $V$ and seat set $E$, the AFC update rules in Sections~\ref{sec:stokes} and~\ref{sec:txor-parity} are local: each tally step touches only seats incident to nodes with non-zero production. A direct implementation of one tally step has cost $O(|E|)$; in sparse regimes with $|E| = O(|V|)$ this is $O(|V|)$ per tally. With hierarchical data structures for neighbourhoods and multi-level Stokes partitions, updates and queries for $n$-body evolution can be organised in $O(|V|\log|V|)$ work per tally. These bounds describe algorithmic scaling of the counts-first Stokes calculus and do not introduce additional physical assumptions.
-\end{remark}
-
-\begin{remark}[$\alpha\Omega$ Motifs manual (AOM 43c)]\label{rem:aom-manual}
-AFC is specified at the level of distinction, relations, ternary outcomes, and the induced flux and ledger calculus on finite plans. Geometric and topological motifs built on this substrate---including named structures such as monopyro, tetratia, monoion, diton, trion, tetraton, and self-refraction motifs---are defined in a separate document, the $\alpha\Omega$ Motifs manual (AOM, Manual 42 + 1 = 43c). That manual assigns names and physical interpretations to recurrent patterns in Memora and current structure. AFC provides the counts-first engine; AOM records motif-level organisation and interpretation.
-\end{remark}

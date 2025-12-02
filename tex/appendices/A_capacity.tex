@@ -1,0 +1,102 @@
+% appendices/00_capacity.tex
+%
+% Capacity C(P) for the Memory--Kernel coupling
+
+\section{Capacity of the Memory--Kernel Coupling}
+\label{app:capacity}
+
+This appendix records information-theoretic quantities associated with the
+Markov Kernel $P$ from Choice~\ref{choice:kernel}. No new axioms are
+introduced.
+
+\subsection{Single-step Channel and Mutual Information}
+
+\begin{definition}[Single-step channel]
+\label{def:channel}
+Let $V$ be a finite family of Distinctions. Let $P$ be a Markov Kernel on $V$
+as in Choice~\ref{choice:kernel}, and let $p$ be a Memory State on $V$ as in
+Choice~\ref{choice:memory-state}. Define random variables $X$ and $Y$ on $V$ by
+\[
+  \Pr(X = i) = p(i),
+  \qquad
+  \Pr(Y = j \mid X = i) = P_{ij}.
+\]
+The joint distribution is
+\[
+  \Pr(X = i, Y = j) = p(i) P_{ij},
+\]
+and the marginal of $Y$ is
+\[
+  q(j) := \Pr(Y = j) = \sum_{i\in V} p(i) P_{ij}.
+\]
+\end{definition}
+
+\begin{definition}[Mutual information in trits]
+\label{def:mutual-info}
+For fixed $p$ and $P$ as in Definition~\ref{def:channel}, the mutual
+information between $X$ and $Y$, measured in trits, is
+\[
+  I_p(X;Y)
+  :=
+  \sum_{i\in V} \sum_{j\in V}
+    p(i) P_{ij}
+    \log_3 \frac{P_{ij}}{q(j)},
+\]
+with $q(j)$ as in Definition~\ref{def:channel}. The logarithm is base $3$.
+\end{definition}
+
+\subsection{Channel Capacity}
+
+\begin{definition}[Capacity of the Kernel]
+\label{def:capacity}
+The capacity of the Markov Kernel $P$ is
+\[
+  C(P) := \max_{p} I_p(X;Y),
+\]
+where the maximum is taken over all Memory States $p$ on $V$.
+\end{definition}
+
+\begin{corollary}[Capacity bound]
+\label{cor:capacity-bound}
+For any Memory State $p$ on $V$,
+\[
+  I_p(X;Y) \le C(P).
+\]
+\end{corollary}
+
+\noindent
+\textbf{Derivation.}
+Directly from Definition~\ref{def:capacity}, since $C(P)$ is the maximum of
+$I_p(X;Y)$ over all admissible $p$.
+
+\subsection{Capacity-based Check}
+\label{subsec:capacity-check}
+
+For a fixed Kernel $P$, Definitions~\ref{def:mutual-info} and
+\ref{def:capacity} assign a numerical capacity $C(P)$.
+
+\begin{definition}[Per-step information rate]
+\label{def:rate}
+Consider repeated independent uses of the channel defined in
+Definition~\ref{def:channel}. A per-step information rate $R$ is any number
+such that at most $R$ trits of reliably distinguishable information are
+associated with each update of the Memory State.
+\end{definition}
+
+The capacity bound implies the following check:
+
+\begin{corollary}[Capacity consistency]
+\label{cor:capacity-consistency}
+If a scheme claims or exhibits a per-step information rate $R$ with
+$R > C(P)$ while using the same Kernel $P$ and Memory State structure as in
+Choices~\ref{choice:memory-state}--\ref{choice:kernel}, then at least one of
+the following holds:
+\begin{itemize}
+  \item the Markov Kernel $P$ does not correctly represent the underlying
+        update mechanism;
+  \item the uses of the mechanism are not independent in the sense of
+        Definition~\ref{def:channel};
+  \item additional structure (such as side channels or memory not captured by
+        $(p,P)$) is present beyond the Choices stated in the main text.
+\end{itemize}
+\end{corollary}

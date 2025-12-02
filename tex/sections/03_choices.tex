@@ -1,0 +1,63 @@
+% sections/01_choices.tex
+%
+% Modelling Choices for Memory State, Markov Kernel, and Flux
+% These are referenced in the AFC Stokes corollary.
+
+\section{Modelling Choices: Memory, Kernel, Flux}
+\label{sec:choices}
+
+\begin{choice}[Memory State]
+\label{choice:memory-state}
+Let $V$ be a finite index set labelling a family of Distinctions. A Memory
+State on $V$ is a function
+\[
+  p : V \to [0,1]
+\]
+with
+\[
+  \sum_{i \in V} p(i) = 1.
+\]
+\end{choice}
+
+\begin{choice}[Markov Kernel on Distinctions]
+\label{choice:kernel}
+A Markov Kernel on $V$ is a matrix $P = (P_{ij})_{i,j \in V}$ satisfying
+\[
+  P_{ij} \ge 0,
+  \qquad
+  \sum_{j \in V} P_{ij} = 1
+  \quad \text{for all } i \in V.
+\]
+The Memory State is updated by
+\[
+  p_{t+1}(j) = \sum_{i \in V} p_t(i) P_{ij}.
+\]
+\end{choice}
+
+\begin{choice}[Net Flux]
+\label{choice:flux}
+Given a Memory State $p$ and Markov Kernel $P$ on $V$, the net flux between
+$i$ and $j$ in one update step is
+\[
+  \phi_{ij} := p(i) P_{ij} - p(j) P_{ji}.
+\]
+This satisfies $\phi_{ij} = -\phi_{ji}$ for all $i,j \in V$.
+\end{choice}
+
+\begin{choice}[Divergence]
+\label{choice:divergence}
+For each $i \in V$, the divergence at $i$ is defined as the sum of fluxes
+\[
+  \mathrm{div}(i) := \sum_{j \in V} \phi_{ij}.
+\]
+\end{choice}
+
+\begin{choice}[Regions and Boundary]
+\label{choice:region}
+A Region is a subset $R \subseteq V$. The boundary of $R$ is the set of
+ordered pairs
+\[
+  \partial R := \{ (i,j) \in V \times V : i \in R,\, j \notin R \}.
+\]
+Boundary flux is the collection of $\phi_{ij}$ over $(i,j) \in \partial R$.
+\end{choice}

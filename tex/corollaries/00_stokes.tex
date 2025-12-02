@@ -1,0 +1,108 @@
+% corollaries/00_stokes.tex
+
+\section{Corollary: Null Potential, Observer Coupling, and Discrete Stokes}
+\label{sec:null-stokes-corollary}
+
+\begin{corollary}[AFC Stokes Identity]
+\label{cor:afc-stokes}
+Let $V$ be a finite family of Distinctions with Memory State $p$, Markov
+Kernel $P$, net flux $\phi$, and divergence $\mathrm{div}$ as in
+Choices~\ref{choice:memory-state}--\ref{choice:divergence}. For any Region
+$R \subseteq V$,
+\begin{equation}
+\label{eq:afc-stokes-cor}
+  \sum_{i\in R} \mathrm{div}(i)
+  =
+  \sum_{\substack{i\in R \\ j\notin R}} \phi_{ij}.
+\end{equation}
+\end{corollary}
+
+\noindent
+\textbf{Derivation.}
+From Consequences~\ref{cons:region}--\ref{cons:relations} and
+Choices~\ref{choice:memory-state}--\ref{choice:region} by finite algebra on
+a finite index set; no external postulates, in accordance with the AF
+protocol of Reginald~\cite{reginald2025af}.
+
+\begin{proof}
+By Choice~\ref{choice:divergence},
+\[
+  \sum_{i\in R} \mathrm{div}(i)
+  =
+  \sum_{i\in R} \sum_{j\in V} \phi_{ij}
+  =
+  \sum_{i\in R} \sum_{j\in R} \phi_{ij}
+  +
+  \sum_{i\in R} \sum_{j\notin R} \phi_{ij}.
+\]
+For the internal term, use antisymmetry $\phi_{ij} = -\phi_{ji}$:
+\[
+  \sum_{i\in R} \sum_{j\in R} \phi_{ij}
+  =
+  \sum_{\{i,j\}\subset R} \bigl( \phi_{ij} + \phi_{ji} \bigr)
+  = 0.
+\]
+Thus internal exchanges cancel. The remaining term is
+\[
+  \sum_{i\in R} \sum_{j\notin R} \phi_{ij}
+  =
+  \sum_{\substack{i\in R \\ j\notin R}} \phi_{ij},
+\]
+which is the net flux across the boundary of $R$ with sign convention taken
+from inside to outside. This yields~\eqref{eq:afc-stokes-cor}.
+\end{proof}
+
+\subsection{Falsification Hooks}
+\label{subsec:falsification}
+
+For a Region $R \subseteq V$ define
+\[
+  S_{\mathrm{int}}(R) := \sum_{i\in R} \sum_{j\in R} \phi_{ij},
+  \qquad
+  S_{\mathrm{div}}(R) := \sum_{i\in R} \mathrm{div}(i),
+  \qquad
+  S_{\partial}(R) := \sum_{\substack{i\in R \\ j\notin R}} \phi_{ij}.
+\]
+
+\begin{itemize}
+  \item \textbf{Internal cancellation.} Under
+    Choice~\ref{choice:flux}, $\phi_{ij} = -\phi_{ji}$ implies
+    $S_{\mathrm{int}}(R) = 0$ for all $R$. A nonzero value falsifies
+    antisymmetry or the completeness of $R$.
+  \item \textbf{Boundary balance.} The identity
+    $S_{\mathrm{div}}(R) = S_{\partial}(R)$ is equivalent to
+    \eqref{eq:afc-stokes-cor}. A persistent mismatch indicates that the
+    Memory--Kernel pair $(p,P)$ or the family of Distinctions $V$ does not
+    satisfy the Choices used in this construction.
+\end{itemize}
+
+\subsection{Mapping to Discrete Generalized Stokes}
+\label{subsec:discrete-stokes-map}
+
+On a finite cell complex, the discrete generalized Stokes theorem can be
+written as
+\begin{equation}
+\label{eq:discrete-stokes}
+  \sum_{\sigma\in\partial C} \omega(\sigma)
+  =
+  \sum_{\tau\in C} (d\omega)(\tau),
+\end{equation}
+where $C$ is a chain of cells, $\partial C$ its boundary, $\omega$ is a
+cochain, and $d\omega$ its coboundary. This is the standard discrete Stokes
+identity on cell complexes as treated, for example, in Whitney's geometric
+integration theory, Munkres' algebraic topology, and the Discrete Exterior
+Calculus literature~\cite{whitney1957,munkres1984,hirani2003,desbrun2005dec}.
+
+Under the dictionary
+\begin{center}
+\begin{tabular}{ll}
+  Region $R$                   & $\leftrightarrow$ chain $C$, \\
+  net flux $\phi$ on boundary & $\leftrightarrow$ cochain $\omega$ on $\partial C$, \\
+  divergence $\mathrm{div}$   & $\leftrightarrow$ coboundary $d\omega$ on $C$,
+\end{tabular}
+\end{center}
+the AFC identity~\eqref{eq:afc-stokes-cor} has the same algebraic form as
+\eqref{eq:discrete-stokes}. Classical proofs of~\eqref{eq:discrete-stokes}
+(e.g.\ via incidence matrices or cochain algebra in the cited sources) then
+apply to the mapped version, without entering the derivation of
+Corollary~\ref{cor:afc-stokes}.

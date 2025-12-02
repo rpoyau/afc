@@ -1,0 +1,81 @@
+% sections/03_glossary.tex
+
+\section*{Glossary}
+\label{sec:glossary}
+
+This glossary lists the entities used in the document. Within the model
+universe, nothing exists beyond these items, their Distinctions, and the
+Relations they support~\cite{reginald2025af}.
+
+\begin{description}
+
+  \item[Null State ($\mathcal{N}$)]
+    Relational starting point. No Distinctions and no Relations are present.
+    Symbols $\infty$ and $\chi$ are used synonymously with $\mathcal{N}$ in
+    this document.
+
+  \item[Distinction]
+    Primitive difference used to describe structure. Any structured object in
+    this document is described as a finite family of Distinctions.
+
+  \item[Relation]
+    Connection between Distinctions. Relations have no independent existence;
+    they are entirely determined by, and exist only through, Distinctions.
+
+  \item[Region]
+    Grouped family of positions, represented by a subset $R \subseteq V$ of an
+    index set $V$ for Distinctions. A Region induces an inside/outside split,
+    and a boundary given by those ordered pairs $(i,j)$ with $i \in R$ and
+    $j \notin R$.
+
+  \item[Memory State]
+    Probability assignment on a finite family of Distinctions. A Memory State
+    is a function $p : V \to [0,1]$ with $\sum_{i\in V} p(i) = 1$.
+
+  \item[Observer / Modeller]
+    Name for the Memory State and its updates when a reference label is
+    required. No separate object beyond the Memory State and the Choices for
+    its update is assumed.
+
+  \item[Markov Kernel]
+    Matrix $P = (P_{ij})_{i,j\in V}$ of transition probabilities on a finite
+    family of Distinctions, with $P_{ij} \ge 0$ and $\sum_{j} P_{ij} = 1$ for
+    each $i \in V$. Together, $(p,P)$ specify how the Memory State changes
+    between updates.
+
+  \item[Flux ($\phi_{ij}$)]
+    Quantity defined from the Memory State $p$ and the Markov Kernel $P$ on
+    ordered pairs of indices $i,j\in V$. In this document, net flux is
+    antisymmetric:
+    \[
+      \phi_{ij} := p(i) P_{ij} - p(j) P_{ji},
+      \qquad
+      \phi_{ij} = -\phi_{ji}.
+    \]
+
+  \item[Divergence ($\mathrm{div}$)]
+    Sum of flux at an index,
+    \[
+      \mathrm{div}(i) := \sum_{j\in V} \phi_{ij}.
+    \]
+
+  \item[AFC Stokes Identity]
+    Identity relating an interior sum of divergence to boundary flux. For any
+    Region $R \subseteq V$,
+    \[
+      \sum_{i\in R} \mathrm{div}(i)
+      =
+      \sum_{\substack{i\in R \\ j\notin R}} \phi_{ij},
+    \]
+    with $\phi$ and $\mathrm{div}$ as above and boundary defined from $R$.
+
+  \item[Capacity]
+    Information-theoretic quantity associated with a Markov Kernel $P$, given
+    by the channel capacity
+    \[
+      C(P) := \max_{p} I_p(X;Y),
+    \]
+    where $I_p(X;Y)$ is the mutual information between successive Memory
+    States induced by $(p,P)$ and the maximum is taken over all Memory States
+    on $V$.
+\end{description}
