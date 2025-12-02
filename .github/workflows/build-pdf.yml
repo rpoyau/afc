@@ -56,14 +56,16 @@ jobs:
         shell: bash
         run: |
           export PATH="$HOME/bin:$PATH"
-          latexmk -xelatex -synctex=1 -interaction=nonstopmode -file-line-error -halt-on-error tex/main.tex
+	  pushd tex
+          latexmk -xelatex -synctex=1 -interaction=nonstopmode -file-line-error -halt-on-error main.tex
+	  popd
 
       - name: Rename Artifact (Dynamic Versioning)
         run: |
           # Get the branch name or tag name
           REF_NAME=${GITHUB_REF_NAME//\//-}
           # Rename file to include the branch name
-          mv main.pdf "AFC_Stokes_Protocol_${REF_NAME}.pdf"
+          mv tex/main.pdf "AFC_Stokes_Protocol_${REF_NAME}.pdf"
           # Save the filename to an environment variable for the next step
           echo "PDF_NAME=AFC_Stokes_Protocol_${REF_NAME}.pdf" >> $GITHUB_ENV
 
