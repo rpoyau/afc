@@ -1,6 +1,3 @@
-Here’s a complete `README.md` you can drop at the root of the repo.
-
-````markdown
 # Axiomatic Fundamentalism Calculus (AFC)
 ## The Hidden Form of Stokes
 
