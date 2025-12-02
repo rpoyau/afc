@@ -271,16 +271,3 @@ do not introduce unlabelled assumptions and that they explicitly state their
 dependence on the core AF objects defined in the main text.
 
 ---
-
-## License
-
-> **TODO:** Add a license (e.g. MIT, Apache 2.0, or a custom research license)
-> appropriate for this work.
-
-Until a license is specified, treat this repository as “all rights reserved”
-by the author.
-
-```
-
-If you want, I can also generate a tiny `CONTRIBUTING.md` that restates the AF rules in “how to send a PR” form.
-```
