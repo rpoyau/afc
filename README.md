@@ -1,14 +1,3 @@
-Gotcha — the problem is that this whole block (and the rest of the README) is still LaTeX-flavoured, not GitHub-Markdown-safe.
-
-Here’s a **fully cleaned README** where:
-
-* No `$...$`, `\(...\)`, or `\[...\]`
-* No `\cite{...}`
-* All math is plain text or in `code` / fenced blocks
-
-You can drop this straight into `README.md`:
-
-````markdown
 # Axiomatic Fundamentalism Calculus (AFC)
 ## The Hidden Form of Stokes
 [![DOI](https://zenodo.org/badge/1106264434.svg)](https://doi.org/10.5281/zenodo.17795590)
@@ -268,8 +257,5 @@ When adding to this repository, keep the AF protocol ordering:
 If you add further appendices (e.g. continuum shadows, examples), ensure they
 do not introduce unlabelled assumptions and that they explicitly state their
 dependence on the core AF objects defined in the main text.
-
-```
-
 If you want to *keep* LaTeX math in the repo but have a Markdown-safe README, this is the version to use.
 ```
